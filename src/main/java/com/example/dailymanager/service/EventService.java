@@ -21,7 +21,13 @@ public class EventService {
      public List<EventDto> getAllEvents() {
 
          return eventRepository.findAll().stream()
-                 .map(event -> new EventDto(event.getId(), event.getTitle(), event.getDescription(), event.getUpdatedDate()))
+                 .map(event ->
+                         new EventDto(
+                                 event.getId(),
+                                 event.getTitle(),
+                                 event.getDescription(),
+                                 event.getAuthor(),
+                                 event.getUpdatedDate()))
                  .toList();
      }
 }
