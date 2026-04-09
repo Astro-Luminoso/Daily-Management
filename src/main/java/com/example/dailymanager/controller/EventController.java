@@ -24,13 +24,15 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventDto> retrieveEvents(@RequestParam(required = false) String author) {
+    public List<EventDto> retrieveEvents(
+            @RequestParam(required = false) String author) {
 
         return eventService.getEvents(author);
     }
 
     @PostMapping
-    public ResponseEntity<PostEventDto> addNewEvent(@Valid @RequestBody PostEventDto newEventDto) {
+    public ResponseEntity<PostEventDto> addNewEvent(
+            @Valid @RequestBody PostEventDto newEventDto) {
 
         PostEventDto createdEvent = eventService.createNewEvent(newEventDto);
 

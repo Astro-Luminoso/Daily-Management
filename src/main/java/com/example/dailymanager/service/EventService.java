@@ -41,9 +41,8 @@ public class EventService {
 
     public List<EventDto> getEvents(String author) {
 
-        List<Event> events =
-                author == null ? eventRepository.findAllByOrderByUpdatedDateDesc()
-                : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
+        List<Event> events = (author == null) ? eventRepository.findAllByOrderByUpdatedDateDesc()
+                        : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
 
         return events.stream()
                 .map(event -> new EventDto(
