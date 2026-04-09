@@ -21,9 +21,21 @@ public class EventService {
         this.encoder = encoder;
     }
 
+    private Event getAuthorizedEvent (String inputPassword, long eventId) throws IllegalAccessException {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalArgumentException("Event Not Found."));
+
+        boolean passwordIsMatch = encoder.matches(inputPassword, event.getPassword());
+
+        if (!passwordIsMatch)
+            throw new IllegalAccessException("InvalidPassword");
+
+        return event;
+    }
+
     public PostEventResponseDto createNewEvent(PostEventRequestDto newEvent) {
 
-        this.eventRepository.save(new Event(
+        eventRepository.save(new Event(
                 newEvent.title(),
                 newEvent.description(),
                 newEvent.author(),
@@ -54,14 +66,7 @@ public class EventService {
 
     public EventResponseDto updateEvent(long id, UpdateEventRequestDto req) throws IllegalAccessException {
 
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Event Not Found."));
-
-        boolean passwordIsMatch = encoder.matches(req.password(), event.getPassword());
-
-        if (!passwordIsMatch)
-            throw new IllegalAccessException("InvalidPassword");
-
+        Event event = getAuthorizedEvent(req.password(), id);
         event.updateEventDetail(req.title(), req.author());
         eventRepository.save(event);
 
@@ -76,14 +81,7 @@ public class EventService {
 
     public void deleteEvent(long id, DeleteRequestDto req) throws IllegalAccessException {
 
-        Event event = eventRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Event Not Found."));
-
-        boolean passwordIsMatch = encoder.matches(req.password(), event.getPassword());
-
-        if (!passwordIsMatch)
-            throw new IllegalAccessException("InvalidPassword");
-
+        Event event = getAuthorizedEvent(req.password(), id);
         eventRepository.delete(event);
     }
 }
