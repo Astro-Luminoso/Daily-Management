@@ -2,6 +2,7 @@ package com.example.dailymanager.controller;
 
 import com.example.dailymanager.dto.EventDto;
 import com.example.dailymanager.dto.PostEventDto;
+import com.example.dailymanager.dto.PostEventResponseDto;
 import com.example.dailymanager.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,10 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<PostEventDto> addNewEvent(
+    public ResponseEntity<PostEventResponseDto> addNewEvent(
             @Valid @RequestBody PostEventDto newEventDto) {
 
-        PostEventDto createdEvent = eventService.createNewEvent(newEventDto);
+        PostEventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }

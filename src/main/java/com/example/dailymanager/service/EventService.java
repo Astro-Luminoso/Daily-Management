@@ -2,6 +2,7 @@ package com.example.dailymanager.service;
 
 import com.example.dailymanager.dto.EventDto;
 import com.example.dailymanager.dto.PostEventDto;
+import com.example.dailymanager.dto.PostEventResponseDto;
 import com.example.dailymanager.entity.Event;
 import com.example.dailymanager.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class EventService {
         this.encoder = encoder;
     }
 
-    public PostEventDto createNewEvent(PostEventDto newEvent) {
+    public PostEventResponseDto createNewEvent(PostEventDto newEvent) {
 
         this.eventRepository.save(new Event(
                 newEvent.title(),
@@ -31,11 +32,10 @@ public class EventService {
                 encoder.encode(newEvent.password())
         ));
 
-        return new PostEventDto(
+        return new PostEventResponseDto(
                 newEvent.title(),
                 newEvent.description(),
-                newEvent.author(),
-                null    /* Password should not be returned */
+                newEvent.author()
         );
     }
 
