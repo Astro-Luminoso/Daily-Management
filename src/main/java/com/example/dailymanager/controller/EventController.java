@@ -23,7 +23,7 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventDto> retrieveEvents(
+    public List<EventResponseDto> retrieveEvents(
             @RequestParam(required = false) String author) {
 
         return eventService.getEvents(author);
@@ -31,19 +31,19 @@ public class EventController {
 
     @PostMapping
     public ResponseEntity<PostEventResponseDto> addNewEvent(
-            @Valid @RequestBody PostEventDto newEventDto) {
+            @Valid @RequestBody PostEventRequestDto newEventDto) {
 
         PostEventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<EventDto> updateEvent(
+    public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
             @RequestBody UpdateEventRequestDto req) {
 
         try {
-            EventDto resBody = eventService.updateEvent(id, req);
+            EventResponseDto resBody = eventService.updateEvent(id, req);
             return ResponseEntity.status(HttpStatus.OK).body(resBody);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

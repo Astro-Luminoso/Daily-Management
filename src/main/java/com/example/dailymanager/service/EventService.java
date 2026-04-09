@@ -21,7 +21,7 @@ public class EventService {
         this.encoder = encoder;
     }
 
-    public PostEventResponseDto createNewEvent(PostEventDto newEvent) {
+    public PostEventResponseDto createNewEvent(PostEventRequestDto newEvent) {
 
         this.eventRepository.save(new Event(
                 newEvent.title(),
@@ -37,13 +37,13 @@ public class EventService {
         );
     }
 
-    public List<EventDto> getEvents(String author) {
+    public List<EventResponseDto> getEvents(String author) {
 
         List<Event> events = (author == null) ? eventRepository.findAllByOrderByUpdatedDateDesc()
                 : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
 
         return events.stream()
-                .map(event -> new EventDto(
+                .map(event -> new EventResponseDto(
                         event.getId(),
                         event.getTitle(),
                         event.getDescription(),
@@ -52,7 +52,7 @@ public class EventService {
                 .toList();
     }
 
-    public EventDto updateEvent(long id, UpdateEventRequestDto req) throws IllegalAccessException {
+    public EventResponseDto updateEvent(long id, UpdateEventRequestDto req) throws IllegalAccessException {
 
         Event event = eventRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Event Not Found."));
@@ -65,7 +65,7 @@ public class EventService {
         event.updateEventDetail(req.title(), req.author());
         eventRepository.save(event);
 
-        return new EventDto(
+        return new EventResponseDto(
                 event.getId(),
                 event.getTitle(),
                 event.getDescription(),
