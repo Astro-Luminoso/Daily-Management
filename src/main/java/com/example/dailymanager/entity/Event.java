@@ -52,7 +52,6 @@ public class Event {
     }
 
     public long getId() {
-
         return this.id;
     }
 
@@ -67,8 +66,15 @@ public class Event {
         return this.author;
     }
     public String getUpdatedDate() {
-
-
         return updatedDate.format(DateTimeFormatter.BASIC_ISO_DATE);
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void updateEventDetail(String title, String author) {
+        this.title = title;
+        this.author = author;
     }
 }
