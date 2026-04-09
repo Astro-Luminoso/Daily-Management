@@ -1,9 +1,6 @@
 package com.example.dailymanager.controller;
 
-import com.example.dailymanager.dto.EventDto;
-import com.example.dailymanager.dto.PostEventDto;
-import com.example.dailymanager.dto.PostEventResponseDto;
-import com.example.dailymanager.dto.UpdateEventRequestDto;
+import com.example.dailymanager.dto.*;
 import com.example.dailymanager.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,20 @@ public class EventController {
         try {
             EventDto resBody = eventService.updateEvent(id, req);
             return ResponseEntity.status(HttpStatus.OK).body(resBody);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (IllegalAccessException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEvent(
+            @PathVariable Long id,
+            @RequestBody DeleteRequestDto req) {
+        try {
+            eventService.deleteEvent(id, req);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (IllegalAccessException e) {

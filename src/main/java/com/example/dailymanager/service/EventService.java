@@ -1,9 +1,6 @@
 package com.example.dailymanager.service;
 
-import com.example.dailymanager.dto.EventDto;
-import com.example.dailymanager.dto.PostEventDto;
-import com.example.dailymanager.dto.PostEventResponseDto;
-import com.example.dailymanager.dto.UpdateEventRequestDto;
+import com.example.dailymanager.dto.*;
 import com.example.dailymanager.entity.Event;
 import com.example.dailymanager.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +40,7 @@ public class EventService {
     public List<EventDto> getEvents(String author) {
 
         List<Event> events = (author == null) ? eventRepository.findAllByOrderByUpdatedDateDesc()
-                        : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
+                : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
 
         return events.stream()
                 .map(event -> new EventDto(
@@ -75,5 +72,18 @@ public class EventService {
                 event.getAuthor(),
                 event.getUpdatedDate()
         );
+    }
+
+    public void deleteEvent(long id, DeleteRequestDto req) throws IllegalAccessException {
+
+        Event event = eventRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Event Not Found."));
+
+        boolean passwordIsMatch = encoder.matches(req.password(), event.getPassword());
+
+        if (!passwordIsMatch)
+            throw new IllegalAccessException("InvalidPassword");
+
+        eventRepository.delete(event);
     }
 }
