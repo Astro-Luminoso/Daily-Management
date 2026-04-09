@@ -1,11 +1,12 @@
 package com.example.dailymanager.controller;
 
 import com.example.dailymanager.dto.EventDto;
+import com.example.dailymanager.dto.PostEventDto;
 import com.example.dailymanager.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +26,13 @@ public class EventController {
     public List<EventDto> retrieveAllEvents() {
 
         return eventService.getAllEvents();
+    }
+
+    @PostMapping
+    public ResponseEntity<PostEventDto> addNewEvent(@RequestBody PostEventDto newEventDto) {
+
+        PostEventDto createdEvent = eventService.createNewEvent(newEventDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
     }
 }
