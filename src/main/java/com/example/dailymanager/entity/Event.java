@@ -5,6 +5,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -37,5 +38,26 @@ public class Event {
         this.description = description;
         this.author = author;
         this.password = password;
+    }
+
+    public long getId() {
+
+        return this.id;
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+    public String getAuthor() {
+        return this.author;
+    }
+    public String getUpdatedDate() {
+
+
+        return updatedDate.format(DateTimeFormatter.BASIC_ISO_DATE);
     }
 }
