@@ -11,7 +11,8 @@ import java.time.LocalDateTime;
 public class Event {
 
     @Id
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -31,8 +32,7 @@ public class Event {
 
     protected Event() {}
 
-    public Event (long id, String title, String description, String author, String password) {
-        this.id = id;
+    public Event (String title, String description, String author, String password) {
         this.title = title;
         this.description = description;
         this.author = author;
