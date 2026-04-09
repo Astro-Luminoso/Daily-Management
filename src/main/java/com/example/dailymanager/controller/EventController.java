@@ -24,9 +24,9 @@ public class EventController {
     }
 
     @GetMapping
-    public List<EventDto> retrieveAllEvents() {
+    public List<EventDto> retrieveEvents(@RequestParam(required = false) String author) {
 
-        return eventService.getAllEvents();
+        return eventService.getEvents(author);
     }
 
     @PostMapping

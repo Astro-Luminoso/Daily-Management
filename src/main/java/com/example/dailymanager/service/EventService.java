@@ -39,16 +39,19 @@ public class EventService {
         );
     }
 
-    public List<EventDto> getAllEvents() {
+    public List<EventDto> getEvents(String author) {
 
-        return eventRepository.findAll().stream()
-                .map(event ->
-                        new EventDto(
-                                event.getId(),
-                                event.getTitle(),
-                                event.getDescription(),
-                                event.getAuthor(),
-                                event.getUpdatedDate()))
+        List<Event> events =
+                author == null ? eventRepository.findAllByOrderByUpdatedDateDesc()
+                : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
+
+        return events.stream()
+                .map(event -> new EventDto(
+                        event.getId(),
+                        event.getTitle(),
+                        event.getDescription(),
+                        event.getAuthor(),
+                        event.getUpdatedDate()))
                 .toList();
     }
 }
