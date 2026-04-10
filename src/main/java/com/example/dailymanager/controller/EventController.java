@@ -59,8 +59,6 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (PasswordNotMatchException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -77,8 +75,6 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (PasswordNotMatchException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
