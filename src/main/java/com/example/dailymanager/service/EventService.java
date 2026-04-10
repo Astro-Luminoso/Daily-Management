@@ -25,12 +25,12 @@ public class EventService {
 
     private Event getAuthorizedEvent (String inputPassword, long eventId) throws IllegalAccessException {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new IllegalArgumentException("Event Not Found."));
+                .orElseThrow(IllegalArgumentException::new);
 
         boolean passwordIsMatch = encoder.matches(inputPassword, event.getPassword());
 
         if (!passwordIsMatch)
-            throw new IllegalAccessException("InvalidPassword");
+            throw new IllegalAccessException();
 
         return event;
     }
