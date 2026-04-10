@@ -91,7 +91,10 @@ flowchart TB
 [DELETE: /events/{:id}](https://github.com/Astro-Luminoso/Daily-Management/wiki/DELETE:--events-%7B:id%7D)
   
 ## ERD
-- TBA
+
+<img width="486" height="458" alt="Screenshot 2026-04-10 at 5 47 26 PM" src="https://github.com/user-attachments/assets/11dfdacd-f1ff-4d37-8850-3ea7e970ca35" />
+
+
 
 ## 실행 방법
 본 API는 실제 배포목적으로 만들어진 것이 아니므로, 로컬 환경에서 실행하는 것을 기준으로 설명한다.
