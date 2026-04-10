@@ -4,7 +4,6 @@ import com.example.dailymanager.dto.request.DeleteRequestDto;
 import com.example.dailymanager.dto.request.PostEventRequestDto;
 import com.example.dailymanager.dto.request.UpdateEventRequestDto;
 import com.example.dailymanager.dto.response.EventResponseDto;
-import com.example.dailymanager.dto.response.PostEventResponseDto;
 import com.example.dailymanager.entity.Event;
 import com.example.dailymanager.exception.EventNotFoundException;
 import com.example.dailymanager.exception.InvalidValueException;
@@ -46,7 +45,7 @@ public class EventService {
     }
 
     @Transactional
-    public PostEventResponseDto createNewEvent(PostEventRequestDto reqBody) {
+    public EventResponseDto createNewEvent(PostEventRequestDto reqBody) {
         if (isNullOrBlank(reqBody.getRequiredValues()))
             throw new InvalidValueException();
 
@@ -57,10 +56,15 @@ public class EventService {
                 encoder.encode(reqBody.password())
         ));
 
-        return new PostEventResponseDto(
-                reqBody.title(),
-                reqBody.description(),
-                reqBody.author()
+        Event event = eventRepository.findTopByOrderByIdDesc()
+                .orElseThrow(EventNotFoundException::new);
+
+        return new EventResponseDto(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getAuthor(),
+                event.getUpdatedDate()
         );
     }
 

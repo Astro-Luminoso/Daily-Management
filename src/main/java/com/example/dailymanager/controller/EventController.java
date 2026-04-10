@@ -4,8 +4,8 @@ import com.example.dailymanager.dto.request.DeleteRequestDto;
 import com.example.dailymanager.dto.request.PostEventRequestDto;
 import com.example.dailymanager.dto.request.UpdateEventRequestDto;
 import com.example.dailymanager.dto.response.EventResponseDto;
-import com.example.dailymanager.dto.response.PostEventResponseDto;
 import com.example.dailymanager.exception.EventNotFoundException;
+import com.example.dailymanager.exception.InvalidValueException;
 import com.example.dailymanager.exception.PasswordNotMatchException;
 import com.example.dailymanager.service.EventService;
 import org.springframework.http.HttpStatus;
@@ -33,11 +33,16 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<PostEventResponseDto> addNewEvent(
+    public ResponseEntity<EventResponseDto> addNewEvent(
             @RequestBody PostEventRequestDto newEventDto) {
-
-        PostEventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        try {
+            EventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        } catch (InvalidValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (EventNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PatchMapping("/{id}")
@@ -48,10 +53,14 @@ public class EventController {
         try {
             EventResponseDto resBody = eventService.updateEvent(id, req);
             return ResponseEntity.status(HttpStatus.OK).body(resBody);
+        } catch (InvalidValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (EventNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (PasswordNotMatchException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -62,10 +71,14 @@ public class EventController {
         try {
             eventService.deleteEvent(id, req);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch(InvalidValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (EventNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (PasswordNotMatchException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
