@@ -40,7 +40,7 @@ public class EventController {
     @PatchMapping("/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
-            @RequestBody UpdateEventRequestDto req) {
+            @Valid @RequestBody UpdateEventRequestDto req) {
 
         try {
             EventResponseDto resBody = eventService.updateEvent(id, req);
@@ -55,7 +55,7 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(
             @PathVariable Long id,
-            @RequestBody DeleteRequestDto req) {
+            @Valid @RequestBody DeleteRequestDto req) {
         try {
             eventService.deleteEvent(id, req);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

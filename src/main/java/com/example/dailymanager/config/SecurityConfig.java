@@ -17,7 +17,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)  /* Maybe remove this line as this api did not decide to use JWT yet */
                 .authorizeHttpRequests(auth -> auth
