@@ -81,8 +81,15 @@ flowchart TB
 
 ## API 명세
 
-- TBA
+### `/events`
+[GET: /events](https://github.com/Astro-Luminoso/Daily-Management/wiki/GET:--events)
 
+[POST: /events](https://github.com/Astro-Luminoso/Daily-Management/wiki/POST:--events)
+
+[PUT: /events/{:id}](https://github.com/Astro-Luminoso/Daily-Management/wiki/PUT:--events-%7B:id%7D)
+
+[DELETE: /events/{:id}](https://github.com/Astro-Luminoso/Daily-Management/wiki/DELETE:--events-%7B:id%7D)
+  
 ## ERD
 - TBA
 
