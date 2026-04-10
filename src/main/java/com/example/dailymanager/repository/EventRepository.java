@@ -13,6 +13,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByOrderByUpdatedDateDesc();
 
     List<Event> findByAuthorOrderByUpdatedDateDesc(String author);
-
-    Optional<Event> findTopByOrderByIdDesc();
 }
