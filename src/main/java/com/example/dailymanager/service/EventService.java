@@ -6,10 +6,12 @@ import com.example.dailymanager.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class EventService {
 
     private final EventRepository eventRepository;
@@ -33,6 +35,7 @@ public class EventService {
         return event;
     }
 
+    @Transactional
     public PostEventResponseDto createNewEvent(PostEventRequestDto newEvent) {
 
         eventRepository.save(new Event(
@@ -64,6 +67,7 @@ public class EventService {
                 .toList();
     }
 
+    @Transactional
     public EventResponseDto updateEvent(long id, UpdateEventRequestDto req) throws IllegalAccessException {
 
         Event event = getAuthorizedEvent(req.password(), id);
@@ -79,6 +83,7 @@ public class EventService {
         );
     }
 
+    @Transactional
     public void deleteEvent(long id, DeleteRequestDto req) throws IllegalAccessException {
 
         Event event = getAuthorizedEvent(req.password(), id);
