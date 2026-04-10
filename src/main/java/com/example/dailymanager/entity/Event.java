@@ -26,9 +26,6 @@ public class Event {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private LocalDateTime createdDate;
-
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedDate;
@@ -41,13 +38,6 @@ public class Event {
         this.description = description;
         this.author = author;
         this.password = password;
-    }
-
-    @PrePersist
-    public void prePersist() {
-        LocalDateTime now = LocalDateTime.now();
-        this.createdDate = now;
-        this.updatedDate = now;
     }
 
     public long getId() {

@@ -45,7 +45,7 @@ public class EventController {
         }
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
             @RequestBody UpdateEventRequestDto req) {
