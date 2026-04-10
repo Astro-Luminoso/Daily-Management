@@ -5,4 +5,5 @@ import jakarta.validation.constraints.NotBlank;
 public record UpdateEventRequestDto(
         String title,
         String author,
-        @NotBlank String password) {}
+        @NotBlank String password) {
+}

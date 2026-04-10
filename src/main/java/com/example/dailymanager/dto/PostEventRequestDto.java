@@ -6,4 +6,5 @@ public record PostEventRequestDto(
         @NotBlank String title,
         @NotBlank String description,
         @NotBlank String author,
-        @NotBlank String password){}
+        @NotBlank String password) {
+}
