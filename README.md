@@ -65,7 +65,7 @@ flowchart TB
   - `EventController`가 `/events` 관련 API를 담당한다.
 - `service`
   - 비즈니스 로직과 권한 검증을 담당한다.
-  - `EventService`가 비밀번호 검증, 생성, 수정, 삭제, 조회 로직을 처리한다.
+  - `EventService`가 비밀번호 검증, Event의 생성, 수정, 삭제, 조회 로직을 처리한다.
 - `repository`
   - JPA를 통해 DB 접근을 담당한다.
   - `EventRepository`는 `Event` 조회 및 정렬 쿼리를 제공한다.
