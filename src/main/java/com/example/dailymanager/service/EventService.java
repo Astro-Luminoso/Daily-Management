@@ -56,8 +56,11 @@ public class EventService {
                 encoder.encode(reqBody.password())
         ));
 
-        Event event = eventRepository.findTopByOrderByIdDesc()
-                .orElseThrow(EventNotFoundException::new);
+        Event event = eventRepository.save(new Event(
+                reqBody.title(),
+                reqBody.description(),
+                reqBody.author(),
+                encoder.encode(reqBody.password())));
 
         return new EventResponseDto(
                 event.getId(),
@@ -89,7 +92,7 @@ public class EventService {
 
         Event event = getAuthorizedEvent(reqBody.password(), id);
         event.updateEventDetail(reqBody.title(), reqBody.author());
-        eventRepository.save(event);
+        event = eventRepository.save(event);
 
         return new EventResponseDto(
                 event.getId(),
