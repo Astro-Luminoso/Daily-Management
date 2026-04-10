@@ -41,7 +41,7 @@ public class EventController {
         } catch (InvalidValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         } catch (EventNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
