@@ -40,8 +40,6 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
         } catch (InvalidValueException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        } catch (EventNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
@@ -49,7 +47,6 @@ public class EventController {
     public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
             @RequestBody UpdateEventRequestDto req) {
-
         try {
             EventResponseDto resBody = eventService.updateEvent(id, req);
             return ResponseEntity.status(HttpStatus.OK).body(resBody);
