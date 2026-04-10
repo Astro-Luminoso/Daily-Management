@@ -2,6 +2,8 @@ package com.example.dailymanager.service;
 
 import com.example.dailymanager.dto.*;
 import com.example.dailymanager.entity.Event;
+import com.example.dailymanager.exception.EventNotFoundException;
+import com.example.dailymanager.exception.PasswordNotMatchException;
 import com.example.dailymanager.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,14 +25,14 @@ public class EventService {
         this.encoder = encoder;
     }
 
-    private Event getAuthorizedEvent (String inputPassword, long eventId) throws IllegalAccessException {
+    private Event getAuthorizedEvent (String inputPassword, long eventId) {
         Event event = eventRepository.findById(eventId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(EventNotFoundException::new);
 
         boolean passwordIsMatch = encoder.matches(inputPassword, event.getPassword());
 
         if (!passwordIsMatch)
-            throw new IllegalAccessException();
+            throw new PasswordNotMatchException();
 
         return event;
     }
@@ -68,7 +70,7 @@ public class EventService {
     }
 
     @Transactional
-    public EventResponseDto updateEvent(long id, UpdateEventRequestDto req) throws IllegalAccessException {
+    public EventResponseDto updateEvent(long id, UpdateEventRequestDto req) {
 
         Event event = getAuthorizedEvent(req.password(), id);
         event.updateEventDetail(req.title(), req.author());
@@ -84,7 +86,7 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(long id, DeleteRequestDto req) throws IllegalAccessException {
+    public void deleteEvent(long id, DeleteRequestDto req) {
 
         Event event = getAuthorizedEvent(req.password(), id);
         eventRepository.delete(event);
