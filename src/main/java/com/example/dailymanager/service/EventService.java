@@ -49,13 +49,6 @@ public class EventService {
         if (isNullOrBlank(reqBody.getRequiredValues()))
             throw new InvalidValueException();
 
-        eventRepository.save(new Event(
-                reqBody.title(),
-                reqBody.description(),
-                reqBody.author(),
-                encoder.encode(reqBody.password())
-        ));
-
         Event event = eventRepository.save(new Event(
                 reqBody.title(),
                 reqBody.description(),
