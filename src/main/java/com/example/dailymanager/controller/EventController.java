@@ -1,9 +1,13 @@
 package com.example.dailymanager.controller;
 
-import com.example.dailymanager.dto.*;
+import com.example.dailymanager.dto.request.DeleteRequestDto;
+import com.example.dailymanager.dto.request.PostEventRequestDto;
+import com.example.dailymanager.dto.request.UpdateEventRequestDto;
+import com.example.dailymanager.dto.response.EventResponseDto;
+import com.example.dailymanager.exception.EventNotFoundException;
+import com.example.dailymanager.exception.InvalidValueException;
+import com.example.dailymanager.exception.PasswordNotMatchException;
 import com.example.dailymanager.service.EventService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +20,6 @@ public class EventController {
 
     private final EventService eventService;
 
-    @Autowired
     public EventController(EventService eventService) {
 
         this.eventService = eventService;
@@ -30,24 +33,28 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity<PostEventResponseDto> addNewEvent(
-            @Valid @RequestBody PostEventRequestDto newEventDto) {
-
-        PostEventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+    public ResponseEntity<EventResponseDto> addNewEvent(
+            @RequestBody PostEventRequestDto newEventDto) {
+        try {
+            EventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
+        } catch (InvalidValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
-            @Valid @RequestBody UpdateEventRequestDto req) {
-
+            @RequestBody UpdateEventRequestDto req) {
         try {
             EventResponseDto resBody = eventService.updateEvent(id, req);
             return ResponseEntity.status(HttpStatus.OK).body(resBody);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (EventNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (IllegalAccessException e) {
+        } catch (PasswordNotMatchException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
@@ -55,13 +62,15 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(
             @PathVariable Long id,
-            @Valid @RequestBody DeleteRequestDto req) {
+            @RequestBody DeleteRequestDto req) {
         try {
             eventService.deleteEvent(id, req);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (IllegalArgumentException e) {
+        } catch(InvalidValueException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (EventNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (IllegalAccessException e) {
+        } catch (PasswordNotMatchException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
