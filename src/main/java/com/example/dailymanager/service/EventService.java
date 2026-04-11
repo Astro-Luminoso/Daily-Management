@@ -9,13 +9,13 @@ import com.example.dailymanager.exception.EventNotFoundException;
 import com.example.dailymanager.exception.InvalidValueException;
 import com.example.dailymanager.exception.PasswordNotMatchException;
 import com.example.dailymanager.repository.EventRepository;
+import jakarta.annotation.Nonnull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,25 +29,37 @@ public class EventService {
         this.encoder = encoder;
     }
 
-    private boolean isNullOrBlank(String[] values) {
-
-        return Arrays.stream(values).anyMatch(value -> Objects.isNull(value) || value.isBlank());
+    private EventResponseDto toEventResponseDto(Event event) {
+        return new EventResponseDto(
+                event.getId(),
+                event.getTitle(),
+                event.getDescription(),
+                event.getAuthor(),
+                event.getUpdatedDate()
+        );
     }
 
-    private Event getAuthorizedEvent (String inputPassword, long eventId) {
+    private boolean isNullOrBlank(String[] values) {
+        return Arrays.stream(values).anyMatch(value -> value == null || value.isBlank());
+    }
+
+    private Event getAuthorizedEvent(String inputPassword, long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
-        boolean passwordIsMatch = encoder.matches(inputPassword, event.getPassword());
-        if (!passwordIsMatch)
+
+        boolean isPasswordMatch = encoder.matches(inputPassword, event.getPassword());
+        if (!isPasswordMatch) {
             throw new PasswordNotMatchException();
+        }
 
         return event;
     }
 
     @Transactional
-    public EventResponseDto createNewEvent(PostEventRequestDto reqBody) {
-        if (isNullOrBlank(reqBody.getRequiredValues()))
+    public EventResponseDto createNewEvent(@Nonnull PostEventRequestDto reqBody) {
+        if (isNullOrBlank(reqBody.getRequiredValues())) {
             throw new InvalidValueException();
+        }
 
         Event event = eventRepository.save(new Event(
                 reqBody.title(),
@@ -55,51 +67,35 @@ public class EventService {
                 reqBody.author(),
                 encoder.encode(reqBody.password())));
 
-        return new EventResponseDto(
-                event.getId(),
-                event.getTitle(),
-                event.getDescription(),
-                event.getAuthor(),
-                event.getUpdatedDate()
-        );
+        return toEventResponseDto(event);
     }
 
     public List<EventResponseDto> getEvents(String author) {
         List<Event> events = (author == null) ? eventRepository.findAllByOrderByUpdatedDateDesc()
                 : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
 
-        return events.stream()
-                .map(event -> new EventResponseDto(
-                        event.getId(),
-                        event.getTitle(),
-                        event.getDescription(),
-                        event.getAuthor(),
-                        event.getUpdatedDate()))
-                .toList();
+        return events.stream().map(this::toEventResponseDto).toList();
     }
 
     @Transactional
-    public EventResponseDto updateEvent(long id, UpdateEventRequestDto reqBody) {
-        if (isNullOrBlank(reqBody.getRequiredValues()))
+    public EventResponseDto updateEvent(long id,
+                                        @Nonnull UpdateEventRequestDto reqBody) {
+        if (isNullOrBlank(reqBody.getRequiredValues())) {
             throw new InvalidValueException();
+        }
 
         Event event = getAuthorizedEvent(reqBody.password(), id);
         event.updateEventDetail(reqBody.title(), reqBody.author());
-        event = eventRepository.save(event);
 
-        return new EventResponseDto(
-                event.getId(),
-                event.getTitle(),
-                event.getDescription(),
-                event.getAuthor(),
-                event.getUpdatedDate()
-        );
+        return toEventResponseDto(event);
     }
 
     @Transactional
-    public void deleteEvent(long id, DeleteRequestDto reqBody) {
-        if (isNullOrBlank(reqBody.getRequiredValues()))
+    public void deleteEvent(long id,
+                            @Nonnull DeleteRequestDto reqBody) {
+        if (isNullOrBlank(reqBody.getRequiredValues())) {
             throw new InvalidValueException();
+        }
 
         Event event = getAuthorizedEvent(reqBody.password(), id);
         eventRepository.delete(event);
