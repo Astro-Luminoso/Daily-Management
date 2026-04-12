@@ -1,16 +1,18 @@
 package com.example.dailymanager.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Comment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -28,4 +30,37 @@ public class Comment {
 
     @Column(nullable = false)
     private Long eventId;
+
+    protected Comment() {
+    }
+
+    public Comment (String content, String author, String password, long eventId) {
+        this.content = content;
+        this.author = author;
+        this.password = password;
+        this.eventId = eventId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getUpdatedDate() {
+        return updatedDate.format(DateTimeFormatter.BASIC_ISO_DATE);
+    }
+
+    public Long getEventId() {
+        return eventId;
+    }
+
+
+
 }
