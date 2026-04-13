@@ -55,8 +55,7 @@ public class EventService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
 
-        boolean isPasswordMatch = encoder.matches(inputPassword, event.getPassword());
-        if (!isPasswordMatch) {
+        if (!event.isPasswordMatch(inputPassword, encoder)) {
             throw new PasswordNotMatchException();
         }
 
