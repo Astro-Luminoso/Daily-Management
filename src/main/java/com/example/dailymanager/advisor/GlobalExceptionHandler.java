@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
             PasswordNotMatchException e,
             HttpServletRequest req
     ) {
-        logger.warn("{}: {} - Password is not match", req.getMethod(), req.getRequestURI());
+        logger.warn("{}: {} - Password does not match", req.getMethod(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
             CommentExceedException e,
             HttpServletRequest req
     ) {
-        logger.warn("{}: {} - Comment Exceed", req.getMethod(), req.getRequestURI());
+        logger.warn("{}: {} - Comments Exceed", req.getMethod(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 }
