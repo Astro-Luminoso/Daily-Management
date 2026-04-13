@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -47,10 +46,6 @@ public class EventService {
         );
     }
 
-    private boolean isNullOrBlank(String[] values) {
-        return Arrays.stream(values).anyMatch(value -> value == null || value.isBlank());
-    }
-
     private Event getAuthorizedEvent(String inputPassword, long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(EventNotFoundException::new);
@@ -64,7 +59,7 @@ public class EventService {
 
     @Transactional
     public EventResponseDto createNewEvent(@Nonnull PostEventRequestDto reqBody) {
-        if (isNullOrBlank(reqBody.getRequiredValues())) {
+        if (reqBody.isInvalid()) {
             throw new InvalidValueException();
         }
 
@@ -102,7 +97,7 @@ public class EventService {
             long id,
             @Nonnull UpdateEventRequestDto reqBody
     ) {
-        if (isNullOrBlank(reqBody.getRequiredValues())) {
+        if (reqBody.isInvalid()) {
             throw new InvalidValueException();
         }
 
@@ -117,7 +112,7 @@ public class EventService {
             long id,
             @Nonnull DeleteRequestDto reqBody
     ) {
-        if (isNullOrBlank(reqBody.getRequiredValues())) {
+        if (reqBody.isInvalid()) {
             throw new InvalidValueException();
         }
 

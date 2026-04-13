@@ -11,7 +11,6 @@ import com.example.dailymanager.repository.EventRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -26,26 +25,26 @@ public class CommentService {
         this.eventRepository = eventRepository;
     }
 
-    private boolean isNullOrBlank(String[] values) {
-        return Arrays.stream(values).anyMatch(value -> value == null || value.isBlank());
+    private CommentResponseDto toCommentResponseDto(Comment comment) {
+        return new CommentResponseDto(
+                comment.getId(),
+                comment.getContent(),
+                comment.getAuthor(),
+                comment.getEventId(),
+                comment.getUpdatedDate()
+        );
     }
 
     public List<CommentResponseDto> findCommentsByEventId(long eventId) {
 
         return commentRepository.findByEventId(eventId).stream()
-                .map(comment -> new CommentResponseDto(
-                        comment.getId(),
-                        comment.getContent(),
-                        comment.getAuthor(),
-                        comment.getEventId(),
-                        comment.getUpdatedDate()
-                ))
+                .map(this::toCommentResponseDto)
                 .toList();
     }
 
     @Transactional
     public CommentResponseDto saveComment(PostCommentRequestDto reqBody) {
-        if(isNullOrBlank(reqBody.getRequiredValues())) {
+        if(reqBody.isInvalid()) {
             throw new InvalidValueException();
         }
         if(!eventRepository.existsById(reqBody.eventId())) {
@@ -55,19 +54,12 @@ public class CommentService {
             throw new CommentExceedException();
         }
 
-        Comment comment = new Comment(
+        Comment comment = commentRepository.save(new Comment(
                 reqBody.content(),
                 reqBody.author(),
                 reqBody.password(),
-                reqBody.eventId());
-        comment = commentRepository.save(comment);
+                reqBody.eventId()));
 
-        return new CommentResponseDto(
-                comment.getId(),
-                comment.getContent(),
-                comment.getAuthor(),
-                comment.getEventId(),
-                comment.getUpdatedDate()
-        );
+        return toCommentResponseDto(comment);
     }
 }
