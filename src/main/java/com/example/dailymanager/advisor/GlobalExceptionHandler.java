@@ -21,13 +21,22 @@ public class GlobalExceptionHandler {
         logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     }
 
+    private ResponseEntity<Void> buildResponse(
+            HttpServletRequest req,
+            Exception e,
+            HttpStatus status
+    ) {
+        logger.warn("{} {} : Client Error {} - {}",
+                req.getMethod(), req.getRequestURI(), status.value(), e.getMessage());
+        return ResponseEntity.status(status).build();
+    }
+
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<Void> handleEventNotFoundException(
             EventNotFoundException e,
             HttpServletRequest req
     ) {
-        logger.warn("{}: {} - Event Not Found", req.getMethod(), req.getRequestURI());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return buildResponse(req, e, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(InvalidValueException.class)
@@ -35,8 +44,7 @@ public class GlobalExceptionHandler {
             InvalidValueException e,
             HttpServletRequest req
     ) {
-        logger.warn("{}: {} - Invalid Value Detected", req.getMethod(), req.getRequestURI());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return buildResponse(req, e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(PasswordNotMatchException.class)
@@ -44,8 +52,7 @@ public class GlobalExceptionHandler {
             PasswordNotMatchException e,
             HttpServletRequest req
     ) {
-        logger.warn("{}: {} - Password does not match", req.getMethod(), req.getRequestURI());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return buildResponse(req, e, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(CommentExceedException.class)
@@ -53,7 +60,6 @@ public class GlobalExceptionHandler {
             CommentExceedException e,
             HttpServletRequest req
     ) {
-        logger.warn("{}: {} - Comments Exceed", req.getMethod(), req.getRequestURI());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return buildResponse(req, e, HttpStatus.BAD_REQUEST);
     }
 }
