@@ -8,7 +8,11 @@ public record UpdateEventRequestDto(
         String password) implements Validatable {
 
     @Override
-    public String[] getRequiredValues() {
-        return new String[] {title, author, password};
+    public boolean isInvalid() {
+        boolean isValidTitle = !title.isBlank() && title.length() <= 30;
+        boolean isValidAuthor = !author.isBlank();
+        boolean isValidPassword = !password.isBlank();
+
+        return !isValidTitle || !isValidAuthor || !isValidPassword;
     }
 }

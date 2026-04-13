@@ -8,7 +8,11 @@ public record PostCommentRequestDto(String content,
                                     long eventId) implements Validatable {
 
     @Override
-    public String[] getRequiredValues() {
-        return new String[] {content(), author(), password()};
+    public boolean isInvalid() {
+        boolean isValidContent = !content.isBlank() && content.length() <= 100;
+        boolean isValidAuthor = !author.isBlank();
+        boolean isValidPassword = !password.isBlank();
+
+        return !isValidContent || !isValidAuthor || !isValidPassword;
     }
 }
