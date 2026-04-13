@@ -3,6 +3,7 @@ package com.example.dailymanager.controller;
 import com.example.dailymanager.dto.request.DeleteRequestDto;
 import com.example.dailymanager.dto.request.PostEventRequestDto;
 import com.example.dailymanager.dto.request.UpdateEventRequestDto;
+import com.example.dailymanager.dto.response.EventDetailResponseDto;
 import com.example.dailymanager.dto.response.EventResponseDto;
 import com.example.dailymanager.service.EventService;
 import org.slf4j.Logger;
@@ -27,14 +28,25 @@ public class EventController {
 
     @GetMapping
     public List<EventResponseDto> retrieveEvents(
-            @RequestParam(required = false) String author) {
+            @RequestParam(required = false) String author
+    ) {
         logger.info("GET: /events - retrieve events with author filter: {}", author);
         return eventService.getEvents(author);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<EventDetailResponseDto> retrieveEventDetail(
+            @PathVariable long id
+    ) {
+        logger.info("GET: /events/{} - retrieve event detail", id);
+        EventDetailResponseDto eventDetail = eventService.getEventById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(eventDetail);
+    }
+
     @PostMapping
     public ResponseEntity<EventResponseDto> addNewEvent(
-            @RequestBody PostEventRequestDto newEventDto) {
+            @RequestBody PostEventRequestDto newEventDto
+    ) {
         logger.info("POST: /events - create new event");
         EventResponseDto createdEvent = eventService.createNewEvent(newEventDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEvent);
@@ -43,7 +55,8 @@ public class EventController {
     @PatchMapping("/{id}")
     public ResponseEntity<EventResponseDto> updateEvent(
             @PathVariable Long id,
-            @RequestBody UpdateEventRequestDto req) {
+            @RequestBody UpdateEventRequestDto req
+    ) {
         logger.info("PATCH: /events/{} - update event", id);
         EventResponseDto resBody = eventService.updateEvent(id, req);
         return ResponseEntity.status(HttpStatus.OK).body(resBody);
@@ -52,7 +65,8 @@ public class EventController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEvent(
             @PathVariable Long id,
-            @RequestBody DeleteRequestDto req) {
+            @RequestBody DeleteRequestDto req
+    ) {
         logger.info("DELETE: /events/{} - delete event", id);
         eventService.deleteEvent(id, req);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

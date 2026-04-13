@@ -3,6 +3,8 @@ package com.example.dailymanager.service;
 import com.example.dailymanager.dto.request.DeleteRequestDto;
 import com.example.dailymanager.dto.request.PostEventRequestDto;
 import com.example.dailymanager.dto.request.UpdateEventRequestDto;
+import com.example.dailymanager.dto.response.CommentResponseDto;
+import com.example.dailymanager.dto.response.EventDetailResponseDto;
 import com.example.dailymanager.dto.response.EventResponseDto;
 import com.example.dailymanager.entity.Event;
 import com.example.dailymanager.exception.EventNotFoundException;
@@ -13,6 +15,7 @@ import jakarta.annotation.Nonnull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,10 +25,14 @@ import java.util.List;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final CommentService commentService;
     private final PasswordEncoder encoder;
 
-    public EventService(EventRepository eventRepository, PasswordEncoder encoder) {
+    public EventService(EventRepository eventRepository,
+                        CommentService commentService,
+                        PasswordEncoder encoder) {
         this.eventRepository = eventRepository;
+        this.commentService = commentService;
         this.encoder = encoder;
     }
 
@@ -77,9 +84,22 @@ public class EventService {
         return events.stream().map(this::toEventResponseDto).toList();
     }
 
+    public EventDetailResponseDto getEventById(@PathVariable long id) {
+        Event event = eventRepository.findById(id)
+                .orElseThrow(EventNotFoundException::new);
+
+        EventResponseDto eventDto = toEventResponseDto(event);
+        List<CommentResponseDto> commentsDto = commentService.findCommentsByEventId(id);
+
+        return new EventDetailResponseDto(eventDto, commentsDto);
+    }
+
+
     @Transactional
-    public EventResponseDto updateEvent(long id,
-                                        @Nonnull UpdateEventRequestDto reqBody) {
+    public EventResponseDto updateEvent(
+            long id,
+            @Nonnull UpdateEventRequestDto reqBody
+    ) {
         if (isNullOrBlank(reqBody.getRequiredValues())) {
             throw new InvalidValueException();
         }
@@ -91,8 +111,10 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteEvent(long id,
-                            @Nonnull DeleteRequestDto reqBody) {
+    public void deleteEvent(
+            long id,
+            @Nonnull DeleteRequestDto reqBody
+    ) {
         if (isNullOrBlank(reqBody.getRequiredValues())) {
             throw new InvalidValueException();
         }

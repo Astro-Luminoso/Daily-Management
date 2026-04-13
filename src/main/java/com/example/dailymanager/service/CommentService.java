@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -27,6 +28,19 @@ public class CommentService {
 
     private boolean isNullOrBlank(String[] values) {
         return Arrays.stream(values).anyMatch(value -> value == null || value.isBlank());
+    }
+
+    public List<CommentResponseDto> findCommentsByEventId(long eventId) {
+
+        return commentRepository.findByEventId(eventId).stream()
+                .map(comment -> new CommentResponseDto(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getAuthor(),
+                        comment.getEventId(),
+                        comment.getUpdatedDate()
+                ))
+                .toList();
     }
 
     @Transactional
