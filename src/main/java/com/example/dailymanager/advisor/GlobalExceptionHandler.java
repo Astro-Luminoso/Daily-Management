@@ -24,7 +24,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(EventNotFoundException.class)
     public ResponseEntity<Void> handleEventNotFoundException(
             EventNotFoundException e,
-            HttpServletRequest req) {
+            HttpServletRequest req
+    ) {
         logger.warn("{}: {} - Event Not Found", req.getMethod(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
@@ -32,7 +33,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidValueException.class)
     public ResponseEntity<Void> handleInvalidValueException(
             InvalidValueException e,
-            HttpServletRequest req) {
+            HttpServletRequest req
+    ) {
         logger.warn("{}: {} - Invalid Value Detected", req.getMethod(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
@@ -40,7 +42,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(PasswordNotMatchException.class)
     public ResponseEntity<Void> handlePasswordNotMatchException(
             PasswordNotMatchException e,
-            HttpServletRequest req) {
+            HttpServletRequest req
+    ) {
         logger.warn("{}: {} - Password is not match", req.getMethod(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
@@ -48,7 +51,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(CommentExceedException.class)
     public ResponseEntity<Void> handleCommentExceedException(
             CommentExceedException e,
-            HttpServletRequest req) {
+            HttpServletRequest req
+    ) {
         logger.warn("{}: {} - Comment Exceed", req.getMethod(), req.getRequestURI());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
