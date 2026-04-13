@@ -3,24 +3,20 @@ package com.example.dailymanager.entity;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Event {
+public class Comment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String title;
-
-    @Column(nullable = false)
-    private String description;
+    private String content;
 
     @Column(nullable = false)
     private String author;
@@ -28,46 +24,43 @@ public class Event {
     @Column(nullable = false)
     private String password;
 
-    @LastModifiedDate
     @Column(nullable = false)
+    @LastModifiedDate
     private LocalDateTime updatedDate;
 
-    protected Event() {
+    @Column(nullable = false)
+    private Long eventId;
+
+    protected Comment() {
     }
 
-    public Event(String title, String description, String author, String password) {
-        this.title = title;
-        this.description = description;
+    public Comment (String content, String author, String password, long eventId) {
+        this.content = content;
         this.author = author;
         this.password = password;
+        this.eventId = eventId;
     }
 
-    public long getId() {
-        return this.id;
+    public Long getId() {
+        return id;
     }
 
-    public String getTitle() {
-        return this.title;
-    }
-
-    public String getDescription() {
-        return this.description;
+    public String getContent() {
+        return content;
     }
 
     public String getAuthor() {
-        return this.author;
+        return author;
     }
 
     public String getUpdatedDate() {
         return updatedDate.format(DateTimeFormatter.BASIC_ISO_DATE);
     }
 
-    public boolean isPasswordMatch(String inputPassword, PasswordEncoder encoder) {
-        return encoder.matches(inputPassword, this.password);
+    public Long getEventId() {
+        return eventId;
     }
 
-    public void updateEventDetail(String title, String author) {
-        this.title = title;
-        this.author = author;
-    }
+
+
 }

@@ -9,7 +9,12 @@ public record PostEventRequestDto(
         String password) implements Validatable {
 
     @Override
-    public String[] getRequiredValues() {
-        return new String[] {title, description, author, password};
+    public boolean isInvalid() {
+        boolean isValidTitle = !title.isBlank() && title.length() <= 30;
+        boolean isValidDescription = !description.isBlank() && description.length() <= 200;
+        boolean isValidAuthor = !author.isBlank();
+        boolean isValidPassword = !password.isBlank();
+
+        return !isValidTitle || !isValidDescription || !isValidAuthor || !isValidPassword;
     }
 }
