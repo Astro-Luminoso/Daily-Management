@@ -5,6 +5,7 @@ import com.example.dailymanager.dto.request.PostEventRequestDto;
 import com.example.dailymanager.dto.request.UpdateEventRequestDto;
 import com.example.dailymanager.dto.response.CommentResponseDto;
 import com.example.dailymanager.dto.response.EventDetailResponseDto;
+import com.example.dailymanager.dto.response.EventListResponseDto;
 import com.example.dailymanager.dto.response.EventResponseDto;
 import com.example.dailymanager.entity.Event;
 import com.example.dailymanager.exception.EventNotFoundException;
@@ -77,11 +78,13 @@ public class EventService {
         return toEventResponseDto(event);
     }
 
-    public List<EventResponseDto> getEvents(String author) {
+    public EventListResponseDto getEvents(String author) {
         List<Event> events = (author == null) ? eventRepository.findAllByOrderByUpdatedDateDesc()
                 : eventRepository.findByAuthorOrderByUpdatedDateDesc(author);
 
-        return events.stream().map(this::toEventResponseDto).toList();
+        return new EventListResponseDto(
+                events.stream().map(this::toEventResponseDto).toList()
+        );
     }
 
     public EventDetailResponseDto getEventById(@PathVariable long id) {
