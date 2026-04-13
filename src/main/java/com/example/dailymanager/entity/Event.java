@@ -62,8 +62,7 @@ public class Event {
         return updatedDate.format(DateTimeFormatter.BASIC_ISO_DATE);
     }
 
-    public boolean isPasswordMatch (String inputPassword, PasswordEncoder encoder) {
-
+    public boolean isPasswordMatch(String inputPassword, PasswordEncoder encoder) {
         return encoder.matches(inputPassword, this.password);
     }
 
