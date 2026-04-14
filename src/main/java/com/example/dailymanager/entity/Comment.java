@@ -7,6 +7,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * 댓글 엔티티
+ */
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class Comment {
