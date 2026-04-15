@@ -5,7 +5,10 @@ import com.example.dailymanager.dto.response.CommentResponseDto;
 import com.example.dailymanager.service.CommentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,8 +40,9 @@ public class CommentController {
      * @return 생성된 댓글 정보, CommentResponseDto 객체로 반환
      */
     @PostMapping
-    public CommentResponseDto createComment(PostCommentRequestDto reqBody) {
+    public ResponseEntity<CommentResponseDto> createComment(@RequestBody PostCommentRequestDto reqBody) {
         logger.info("POST /comments : Create Comment for Event ID: {}", reqBody.eventId());
-        return commentService.saveComment(reqBody);
+        CommentResponseDto resBody = commentService.saveComment(reqBody);
+        return ResponseEntity.status(HttpStatus.CREATED).body(resBody);
     }
 }

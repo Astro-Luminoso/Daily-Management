@@ -8,6 +8,7 @@ import com.example.dailymanager.exception.EventNotFoundException;
 import com.example.dailymanager.exception.InvalidValueException;
 import com.example.dailymanager.repository.CommentRepository;
 import com.example.dailymanager.repository.EventRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +23,15 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final EventRepository eventRepository;
+    private final PasswordEncoder encoder;
 
-    public CommentService(CommentRepository commentRepository, EventRepository eventRepository) {
+    public CommentService(
+            CommentRepository commentRepository,
+            EventRepository eventRepository,
+            PasswordEncoder encoder) {
         this.commentRepository = commentRepository;
         this.eventRepository = eventRepository;
+        this.encoder = encoder;
     }
 
     /**
@@ -84,7 +90,7 @@ public class CommentService {
         Comment comment = commentRepository.save(new Comment(
                 reqBody.content(),
                 reqBody.author(),
-                reqBody.password(),
+                encoder.encode(reqBody.password()),
                 reqBody.eventId()));
 
         return toCommentResponseDto(comment);
