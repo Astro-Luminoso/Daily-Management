@@ -34,7 +34,7 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)  /* Maybe remove this line as this api did not decide to use JWT yet */
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error", "/events/**").permitAll()
+                        .requestMatchers("/error", "/events/**", "/comments").permitAll()
                         .anyRequest().denyAll()
                 )
                 .build();
